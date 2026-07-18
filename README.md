@@ -29,7 +29,7 @@ make build            # builds whisper.cpp lib, downloads ggml-base.bin (~142MB)
 ## Install to /Applications
 
 ```bash
-make install-app      # builds, packages VideoTranscriber.app, copies it to /Applications
+make install          # builds, packages VideoTranscriber.app, copies it to /Applications
 ```
 
 Then launch **Video Transcriber** from Finder/Spotlight. `make bundle` alone just
