@@ -1,2 +1,4 @@
 github.com/ggerganov/whisper.cpp/bindings/go v0.0.0-20260711155359-080bbbe85230 h1:NVfG7r53dG5D/1aR/3bLrn307Rll/DPOcFCaEAC8vAM=
 github.com/ggerganov/whisper.cpp/bindings/go v0.0.0-20260711155359-080bbbe85230/go.mod h1:qyHjS/50ORo01H0NsuEEGsQR9VCtOcEye0gUl2sx1s8=
+github.com/sashabaranov/go-openai v1.41.2 h1:vfPRBZNMpnqu8ELsclWcAvF19lDNgh1t6TVfFFOPiSM=
+github.com/sashabaranov/go-openai v1.41.2/go.mod h1:lj5b/K+zjTSFxVLijLSTDZuP7adOgerWeFyZLUhAKRg=
