@@ -26,6 +26,19 @@ make build            # builds whisper.cpp lib, downloads ggml-base.bin (~142MB)
 
 `make help` lists all targets.
 
+## Install to /Applications
+
+```bash
+make install-app      # builds, packages VideoTranscriber.app, copies it to /Applications
+```
+
+Then launch **Video Transcriber** from Finder/Spotlight. `make bundle` alone just
+produces `dist/VideoTranscriber.app` without installing.
+
+ffmpeg **must** be installed (`brew install ffmpeg`) — the app checks for it at
+startup and exits if missing. Apps launched from Finder don't inherit your shell
+PATH, so the app also probes the standard Homebrew locations automatically.
+
 ## Test
 
 ```bash

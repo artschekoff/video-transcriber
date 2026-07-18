@@ -4,15 +4,19 @@
 # Go module source, then builds the app with the right CGo include/lib paths.
 # ponytail: macOS/Metal only. For Linux, drop the Metal frameworks from EXT_LDFLAGS
 #           and adjust LIB_PATHS (add fyne-cross if multi-OS releases are needed).
-.PHONY: help build run test clean install download-model whisper-lib release
+.PHONY: help build run test clean install download-model whisper-lib bundle install-app release
 
-APP_NAME    := VideoTranscriber
-DIST_DIR    := dist
-BIN         := $(DIST_DIR)/$(APP_NAME)
-MODEL_DIR   := models
-MODEL_FILE  := $(MODEL_DIR)/ggml-base.bin
-MODEL_URL   := https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin
-INSTALL_DIR := /usr/local/bin
+APP_NAME     := VideoTranscriber
+DIST_DIR     := dist
+BIN          := $(DIST_DIR)/$(APP_NAME)
+MODEL_DIR    := models
+MODEL_FILE   := $(MODEL_DIR)/ggml-base.bin
+MODEL_URL    := https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin
+INSTALL_DIR  := /usr/local/bin
+APP_BUNDLE   := $(DIST_DIR)/$(APP_NAME).app
+APPLICATIONS := /Applications
+BUNDLE_TAG      = $(shell git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
+BUNDLE_VERSION ?= $(or $(BUNDLE_TAG),1.0.0)
 
 # whisper.cpp native build (static libs). The Go binding ships no C sources, so
 # we fetch the pinned whisper.cpp module, copy it out of the read-only module
@@ -58,9 +62,21 @@ test: $(WHISPER_LIB) ## Run all tests
 	C_INCLUDE_PATH="$(INCLUDE_PATHS)" LIBRARY_PATH="$(LIB_PATHS)" CGO_ENABLED=1 \
 		go test -ldflags "-extldflags '$(EXT_LDFLAGS)'" ./...
 
-install: build ## Build and install the binary onto PATH
+install: build ## Build and install the raw binary onto PATH (CLI use)
 	sudo install -m 0755 $(BIN) $(INSTALL_DIR)/$(APP_NAME)
 	@echo "Installed $(APP_NAME) to $(INSTALL_DIR)"
+
+bundle: build ## Package into dist/VideoTranscriber.app (macOS)
+	rm -rf $(APP_BUNDLE)
+	mkdir -p $(APP_BUNDLE)/Contents/MacOS
+	cp $(BIN) $(APP_BUNDLE)/Contents/MacOS/$(APP_NAME)
+	sed 's/__VERSION__/$(BUNDLE_VERSION)/g' packaging/darwin/Info.plist > $(APP_BUNDLE)/Contents/Info.plist
+	@echo "Built $(APP_BUNDLE)"
+
+install-app: bundle ## Install the .app into /Applications
+	rm -rf $(APPLICATIONS)/$(APP_NAME).app
+	cp -R $(APP_BUNDLE) $(APPLICATIONS)/
+	@echo "Installed $(APP_NAME).app to $(APPLICATIONS)"
 
 clean: ## Remove build artifacts, native libs, and the downloaded model
 	rm -rf $(DIST_DIR) $(MODEL_DIR) build

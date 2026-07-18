@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"log"
 	"os"
+	"strings"
 
 	"fyne.io/fyne/v2/app"
 
@@ -14,7 +15,21 @@ import (
 //go:embed models/ggml-base.bin
 var modelBytes []byte
 
+// ensurePATH prepends common CLI install dirs. Apps launched from Finder inherit
+// launchd's minimal PATH (no Homebrew), so ffmpeg installed via brew isn't found.
+// ponytail: static list covers Homebrew on Apple Silicon + Intel; extend if needed.
+func ensurePATH() {
+	path := os.Getenv("PATH")
+	for _, dir := range []string{"/opt/homebrew/bin", "/usr/local/bin"} {
+		if !strings.Contains(path, dir) {
+			path = dir + string(os.PathListSeparator) + path
+		}
+	}
+	os.Setenv("PATH", path)
+}
+
 func main() {
+	ensurePATH()
 	if err := audio.CheckFFmpeg(); err != nil {
 		log.Fatalf("startup check failed: %v", err)
 	}
