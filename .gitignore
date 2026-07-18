@@ -106,3 +106,8 @@ models/
 build/
 *.tmp
 .DS_Store
+
+# Local agent tooling / stray build output
+.claude/
+.serena/
+/video-transcriber
