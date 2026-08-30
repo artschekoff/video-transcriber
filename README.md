@@ -1,3 +1,5 @@
+![Video Transcriber](images/hero.jpg)
+
 # Video Transcriber
 
 **On-device video & audio subtitling for macOS — Whisper running locally, optional OpenAI translation.**
