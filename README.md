@@ -1,5 +1,7 @@
 # Video Transcriber
 
+**On-device video & audio subtitling for macOS — Whisper running locally, optional OpenAI translation.**
+
 Desktop app (Fyne GUI) that extracts subtitles from video/audio using Whisper
 (whisper.cpp, running locally), with optional OpenAI translation of the result.
 
